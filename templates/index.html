@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Price Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Flipkart Price Tracker</h1>
+
+        <form method="POST" action="/">
+            <input type="text" name="url" placeholder="Enter Flipkart URL" required>
+            <button type="submit">Fetch Details</button>
+        </form>
+
+        <input type="text" id="search" placeholder="Search products by title..." onkeyup="searchProducts()">
+
+        {% if product %}
+            <h2>Product Details</h2>
+            <table>
+                <tr><th>Title</th><td>{{ product.title }}</td></tr>
+                <tr><th>Current Price</th><td>{{ product.current_price }}</td></tr>
+                <tr><th>Description</th><td>{{ product.description }}</td></tr>
+                <tr><th>Rating</th><td>{{ product.rating }}</td></tr>
+                <tr><th>Reviews</th><td>{{ product.reviews }}</td></tr>
+                <tr><th>Total Purchases</th><td>{{ product.total_purchases }}</td></tr>
+            </table>
+
+            <form method="POST" action="{{ url_for('recheck_price', product_id=product.id) }}">
+                <button type="submit">Recheck Price</button>
+            </form>
+
+            <h3>Price History</h3>
+            <canvas id="price-chart"></canvas>
+        {% elif error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <h3>All Products</h3>
+        <ul>
+            {% for product in products %}
+                <li>{{ product.title }} - {{ product.current_price }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
